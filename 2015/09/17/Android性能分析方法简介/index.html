@@ -1,0 +1,343 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Android性能分析方法简介 | 开发那点事</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="sim">
+    
+    <meta name="description" content="下面介绍几种分析Android App性能的方法。主要从时间维度分析App运行中比较耗时的操作。
+1. 系统自带时间戳Android 系统中ActivityManager会默认打印启动activity相关的信息，其中带有Displayed的会统计启动消耗时间。
+adb logcat |grep Di">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="开发那点事" title="开发那点事"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="开发那点事">开发那点事</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:grushy.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/09/17/Android性能分析方法简介/" title="Android性能分析方法简介" itemprop="url">Android性能分析方法简介</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://grushy.github.io" title="sim">sim</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-09-17T02:34:24.000Z" itemprop="datePublished">2015-09-17</time>
+    更新日期:<time datetime="2015-09-17T03:02:40.000Z" itemprop="dateModified">2015-09-17</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-_系统自带时间戳"><span class="toc-number">1.</span> <span class="toc-text">1. 系统自带时间戳</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-_Traceview"><span class="toc-number">2.</span> <span class="toc-text">2. Traceview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ddms"><span class="toc-number">2.1.</span> <span class="toc-text">ddms</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android_Studio"><span class="toc-number">2.2.</span> <span class="toc-text">Android Studio</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-_Dmtracedump"><span class="toc-number">3.</span> <span class="toc-text">3. Dmtracedump</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-_Systrace"><span class="toc-number">4.</span> <span class="toc-text">4. Systrace</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+		</div>
+		
+		<p>下面介绍几种分析Android App性能的方法。主要从时间维度分析App运行中比较耗时的操作。</p>
+<h1 id="1-_系统自带时间戳">1. 系统自带时间戳</h1><p>Android 系统中ActivityManager会默认打印启动activity相关的信息，其中带有Displayed的会统计启动消耗时间。</p>
+<figure class="highlight 1c"><table><tr><td class="code"><pre><span class="line">adb logcat <span class="string">|grep Displayed</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">I/ActivityManager(  <span class="number">725</span>): Displayed com.dianping.dppos/com.dianping.merchant.main.activity.app.SplashScreenActivity: +<span class="number">2</span>s87ms</span><br><span class="line">I/ActivityManager(  <span class="number">725</span>): Displayed com.dianping.dppos/com.dianping.merchant.main.activity.app.LaunchActivity: +<span class="number">591</span>ms</span><br></pre></td></tr></table></figure>
+<h1 id="2-_Traceview">2. Traceview</h1><h2 id="ddms">ddms</h2><p>打开DDMS，选中”Start Method Profiling”，操作App需要分析性能的部分（时间最好控制在5s以内，方便分析），选中”Stop Method Profiling”。</p>
+<p><img src="ddms.png" alt=""></p>
+<p>DDMS 会自动保存为trace文件并打开。</p>
+<p><img src="ddms_trace.png" alt=""></p>
+<p>下面看下这个表格的几个参数的含义</p>
+<p><img src="ddms_profile.png" alt=""></p>
+<ol>
+<li>看参数按照CPU Time/Call排序，可以找到耗时方法。</li>
+<li>按照Call+Recur Calls/Total排序，看频繁被调用的方法。</li>
+</ol>
+<h2 id="Android_Studio">Android Studio</h2><p>在android studio中android tab选择CPU有一个时间按钮，可以跟ddms中的类似，点击开始方法分析，再点击停止分析，并且显示抓取数据。</p>
+<p><img src="as_trace.png" alt=""></p>
+<p>抓取数据分析图如下：</p>
+<p><img src="as_profile.png" alt=""></p>
+<p>根据方法执行时间排序或者上面时间轴图分析耗时操作。</p>
+<h1 id="3-_Dmtracedump">3. Dmtracedump</h1><p>dmtracedump 可以把前面生成的trace文件生成图片或html文件更具可读性。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="tag">dmtracedump</span> <span class="attr_selector">[-ho]</span> <span class="attr_selector">[-s sortable]</span> <span class="attr_selector">[-d trace-base-name]</span> <span class="attr_selector">[-g outfile]</span> &lt;<span class="tag">trace-base-name</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>生成方法树图片<br><figure class="highlight nimrod"><table><tr><td class="code"><pre><span class="line">dmtracedump -g <span class="keyword">method</span>.png ddms.trace</span><br></pre></td></tr></table></figure></p>
+<p>ps. 生成图片需要安装Graphviz</p>
+<p>生成html文件</p>
+<h1 id="4-_Systrace">4. Systrace</h1><p>Systrace 是 Android 4.1 中新增的性能数据采样和分析工具。它可帮助开发者收集 Android 关键子系统（如 surfaceflinger、WindowManagerService 等 Framework 部分关键模块、服务，View 系统等）的运行信息，从而帮助开发者更直观的分析系统瓶颈，改进性能。</p>
+<p>systrace 命令格式</p>
+<figure class="highlight inform7"><table><tr><td class="code"><pre><span class="line">$ python systrace.py <span class="comment">[options]</span> <span class="comment">[category1]</span> <span class="comment">[category2]</span> ... <span class="comment">[categoryN]</span></span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line">Option					Description</span><br><span class="line">-<span class="keyword">h</span>, --<span class="keyword">help</span>				Show the <span class="keyword">help</span> message.</span><br><span class="line">-o &lt;<span class="keyword">FILE</span>&gt;				Write the HTML trace <span class="keyword">report</span> to the specified <span class="keyword">file</span>.</span><br><span class="line">-t <span class="keyword">N</span>, --time=<span class="keyword">N</span>			Trace activity <span class="keyword">for</span> <span class="keyword">N</span> seconds. The default value is 5 seconds.</span><br><span class="line">-b <span class="keyword">N</span>, --buf-size=<span class="keyword">N</span>		<span class="keyword">Use</span> a trace buffer size of <span class="keyword">N</span> kilobytes. This option lets you limit the <span class="keyword">total</span> size of the data collected during a trace.</span><br><span class="line">-k &lt;KFUNCS&gt;</span><br><span class="line">--ktrace=&lt;KFUNCS&gt;		Trace the activity of specific kernel functions, specified <span class="keyword">in</span> a comma-separated <span class="keyword">list</span>.</span><br><span class="line">-<span class="keyword">l</span>, --<span class="keyword">list</span>-categories	<span class="keyword">List</span> the available tracing category tags. The available tags are:</span><br><span class="line">						gfx - Graphics</span><br><span class="line">						<span class="keyword">input</span> - <span class="keyword">Input</span></span><br><span class="line">						<span class="keyword">view</span> - <span class="keyword">View</span></span><br><span class="line">						...</span><br><span class="line">-a &lt;APP_NAME&gt;</span><br><span class="line">--<span class="keyword">app</span>=&lt;APP_NAME&gt;		Enable tracing <span class="keyword">for</span> applications, specified <span class="keyword">as</span> a comma-separated <span class="keyword">list</span> of package names. The apps must contain tracing instrumentation calls from the Trace <span class="keyword">class</span>. <span class="keyword">For</span> <span class="keyword">more</span> information, see Analyzing UI Performance with Systrace.</span><br><span class="line">--from-<span class="keyword">file</span>=&lt;FROM_FILE&gt;	Create the interactive Systrace <span class="keyword">report</span> from a <span class="keyword">file</span>, instead of running a live trace.</span><br><span class="line">-<span class="keyword">e</span> &lt;DEVICE_SERIAL&gt;</span><br><span class="line">--serial=&lt;DEVICE_SERIAL&gt;Conduct the trace <span class="keyword">on</span> a specific connected device, identified <span class="keyword">by</span> its device serial number.</span><br></pre></td></tr></table></figure>
+<p>实例：</p>
+<figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">$ cd android-sdk/platform-tools/systrace</span><br><span class="line">$ python systrace<span class="class">.py</span> --time=<span class="number">10</span> -o mynewtrace<span class="class">.html</span> sched gfx view wm</span><br></pre></td></tr></table></figure>
+<p>用chrome打开mynewtrace.html文件</p>
+<p><img src="systrace.png" alt="systrace"></p>
+<p>点开右上角的Alerts，有工具根据trace文件分析出来的问题点以及解决方案建议。</p>
+<p>chrome 中操作快捷键</p>
+<figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">Key	Description</span><br><span class="line">w			Zoom <span class="keyword">into</span> <span class="operator">the</span> trace timeline.</span><br><span class="line">s			Zoom out <span class="operator">of</span> <span class="operator">the</span> trace timeline.</span><br><span class="line"><span class="operator">a</span>			Pan left <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">trace</span> <span class="title">timeline</span>.</span></span><br><span class="line">d			Pan <span class="constant">right</span> <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">trace</span> <span class="title">timeline</span>.</span></span><br><span class="line">e			Center <span class="operator">the</span> trace timeline <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">current</span> <span class="title">mouse</span> <span class="title">location</span>.</span></span><br><span class="line">g			Show grid <span class="keyword">at</span> <span class="operator">the</span> <span class="built_in">start</span> <span class="operator">of</span> <span class="operator">the</span> currently selected task.</span><br><span class="line">Shift+g	Show grid <span class="keyword">at</span> <span class="operator">the</span> <span class="function"><span class="keyword">end</span> <span class="title">of</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">task</span>.</span></span><br><span class="line">Right Arrow	Select <span class="operator">the</span> next event <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">timeline</span>.</span></span><br><span class="line">Left Arrow	Select <span class="operator">the</span> previous event <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">timeline</span>.</span></span><br></pre></td></tr></table></figure>
+<p>也可以在关心的代码中加入Trace，精确定位问题。</p>
+<figure class="highlight aspectj"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">ProcessPeople</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Trace.beginSection(<span class="string">"ProcessPeople"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Trace.beginSection(<span class="string">"Processing Jane"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// code for Jane task...</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Trace.endSection(); <span class="comment">// ends "Processing Jane"</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Trace.beginSection(<span class="string">"Processing John"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// code for John task...</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Trace.endSection(); <span class="comment">// ends "Processing John"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.endSection(); <span class="comment">// ends "ProcessPeople"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="参考">参考</h1><p><a href="http://blog.csdn.net/innost/article/details/9008691" target="_blank" rel="external">http://blog.csdn.net/innost/article/details/9008691</a>  </p>
+<p><a href="http://blog.gaoyuan.xyz/2013/11/22/android-app-profile-tools/" target="_blank" rel="external">http://blog.gaoyuan.xyz/2013/11/22/android-app-profile-tools/</a></p>
+<p><a href="http://developer.android.com/intl/zh-cn/tools/help/systrace.html" target="_blank" rel="external">http://developer.android.com/intl/zh-cn/tools/help/systrace.html</a></p>
+<p><a href="https://developer.android.com/tools/help/systrace.html" target="_blank" rel="external">https://developer.android.com/tools/help/systrace.html</a></p>
+<p><a href="http://developer.android.com/intl/zh-cn/tools/debugging/debugging-tracing.html" target="_blank" rel="external">http://developer.android.com/intl/zh-cn/tools/debugging/debugging-tracing.html</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Android-性能分析-Traceview-Dmtracedump-Systrace/">Android 性能分析 Traceview Dmtracedump Systrace</a>
+  </div>
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://grushy.github.io/2015/09/17/Android性能分析方法简介/" data-title="Android性能分析方法简介 | 开发那点事" data-tsina="undefined" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/09/17/Android如何使用蓝牙打印机/" title="Android如何使用蓝牙打印机">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Android如何使用蓝牙打印机</span>
+</a>
+</div>
+
+
+</nav>
+
+	
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-_系统自带时间戳"><span class="toc-number">1.</span> <span class="toc-text">1. 系统自带时间戳</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-_Traceview"><span class="toc-number">2.</span> <span class="toc-text">2. Traceview</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ddms"><span class="toc-number">2.1.</span> <span class="toc-text">ddms</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android_Studio"><span class="toc-number">2.2.</span> <span class="toc-text">Android Studio</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-_Dmtracedump"><span class="toc-number">3.</span> <span class="toc-text">3. Dmtracedump</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-_Systrace"><span class="toc-number">4.</span> <span class="toc-text">4. Systrace</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#参考"><span class="toc-number">5.</span> <span class="toc-text">参考</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Android-性能分析-Traceview-Dmtracedump-Systrace/" title="Android 性能分析 Traceview Dmtracedump Systrace">Android 性能分析 Traceview Dmtracedump Systrace<sup>1</sup></a></li>
+		
+			<li><a href="/tags/打印机/" title="打印机">打印机<sup>1</sup></a></li>
+		
+			<li><a href="/tags/蓝牙/" title="蓝牙">蓝牙<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<div class="social-font clearfix">
+		
+		<a href="http://weibo.com/5614576257" target="_blank" title="weibo"></a>
+		
+		
+		
+		<a href="https://github.com/grushy" target="_blank" title="github"></a>
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://grushy.github.io" target="_blank" title="sim">sim</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+
+
+
+
+  </body>
+</html>
