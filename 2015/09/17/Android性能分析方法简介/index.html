@@ -75,7 +75,7 @@ adb logcat |grep Di">
     </p>
   <p class="article-time">
     <time datetime="2015-09-17T02:34:24.000Z" itemprop="datePublished">2015-09-17</time>
-    更新日期:<time datetime="2015-09-17T08:36:10.000Z" itemprop="dateModified">2015-09-17</time>
+    更新日期:<time datetime="2015-09-18T03:59:34.000Z" itemprop="dateModified">2015-09-18</time>
     
   </p>
 </header>
@@ -121,6 +121,7 @@ adb logcat |grep Di">
 <figure class="highlight stylus"><table><tr><td class="code"><pre><span class="line">$ cd android-sdk/platform-tools/systrace</span><br><span class="line">$ python systrace<span class="class">.py</span> --time=<span class="number">10</span> -o mynewtrace<span class="class">.html</span> sched gfx view wm</span><br></pre></td></tr></table></figure>
 <p>用chrome打开mynewtrace.html文件</p>
 <p><img src="systrace.png" alt="systrace"></p>
+<p><img src="systrace.png" alt="systrace"></p>
 <p>点开右上角的Alerts，有工具根据trace文件分析出来的问题点以及解决方案建议。</p>
 <p>chrome 中操作快捷键</p>
 <figure class="highlight livecodeserver"><table><tr><td class="code"><pre><span class="line">Key	Description</span><br><span class="line">w			Zoom <span class="keyword">into</span> <span class="operator">the</span> trace timeline.</span><br><span class="line">s			Zoom out <span class="operator">of</span> <span class="operator">the</span> trace timeline.</span><br><span class="line"><span class="operator">a</span>			Pan left <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">trace</span> <span class="title">timeline</span>.</span></span><br><span class="line">d			Pan <span class="constant">right</span> <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">trace</span> <span class="title">timeline</span>.</span></span><br><span class="line">e			Center <span class="operator">the</span> trace timeline <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">current</span> <span class="title">mouse</span> <span class="title">location</span>.</span></span><br><span class="line">g			Show grid <span class="keyword">at</span> <span class="operator">the</span> <span class="built_in">start</span> <span class="operator">of</span> <span class="operator">the</span> currently selected task.</span><br><span class="line">Shift+g	Show grid <span class="keyword">at</span> <span class="operator">the</span> <span class="function"><span class="keyword">end</span> <span class="title">of</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">task</span>.</span></span><br><span class="line">Right Arrow	Select <span class="operator">the</span> next event <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">timeline</span>.</span></span><br><span class="line">Left Arrow	Select <span class="operator">the</span> previous event <span class="command"><span class="keyword">on</span> <span class="title">the</span> <span class="title">currently</span> <span class="title">selected</span> <span class="title">timeline</span>.</span></span><br></pre></td></tr></table></figure>
@@ -128,7 +129,6 @@ adb logcat |grep Di">
 <figure class="highlight aspectj"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">void</span> <span class="title">ProcessPeople</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Trace.beginSection(<span class="string">"ProcessPeople"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        Trace.beginSection(<span class="string">"Processing Jane"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// code for Jane task...</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Trace.endSection(); <span class="comment">// ends "Processing Jane"</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Trace.beginSection(<span class="string">"Processing John"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// code for John task...</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Trace.endSection(); <span class="comment">// ends "Processing John"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.endSection(); <span class="comment">// ends "ProcessPeople"</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h1 id="参考">参考</h1><p><a href="http://blog.csdn.net/innost/article/details/9008691" target="_blank" rel="external">http://blog.csdn.net/innost/article/details/9008691</a>  </p>
 <p><a href="http://blog.gaoyuan.xyz/2013/11/22/android-app-profile-tools/" target="_blank" rel="external">http://blog.gaoyuan.xyz/2013/11/22/android-app-profile-tools/</a></p>
-<p><a href="http://developer.android.com/intl/zh-cn/tools/help/systrace.html" target="_blank" rel="external">http://developer.android.com/intl/zh-cn/tools/help/systrace.html</a></p>
 <p><a href="https://developer.android.com/tools/help/systrace.html" target="_blank" rel="external">https://developer.android.com/tools/help/systrace.html</a></p>
 <p><a href="http://developer.android.com/intl/zh-cn/tools/debugging/debugging-tracing.html" target="_blank" rel="external">http://developer.android.com/intl/zh-cn/tools/debugging/debugging-tracing.html</a></p>
   
@@ -137,7 +137,7 @@ adb logcat |grep Di">
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Android-性能分析-Traceview-Dmtracedump-Systrace/">Android 性能分析 Traceview Dmtracedump Systrace</a>
+  <span></span> <a href="/tags/Android/">Android</a><a href="/tags/Dmtracedump/">Dmtracedump</a><a href="/tags/Systrace/">Systrace</a><a href="/tags/Traceview/">Traceview</a><a href="/tags/性能分析/">性能分析</a>
   </div>
 
 
@@ -185,9 +185,15 @@ adb logcat |grep Di">
 	<p class="asidetitle">标签</p>
 		<ul class="clearfix">
 		
-			<li><a href="/tags/Android/" title="Android">Android<sup>1</sup></a></li>
+			<li><a href="/tags/Android/" title="Android">Android<sup>2</sup></a></li>
 		
-			<li><a href="/tags/Android-性能分析-Traceview-Dmtracedump-Systrace/" title="Android 性能分析 Traceview Dmtracedump Systrace">Android 性能分析 Traceview Dmtracedump Systrace<sup>1</sup></a></li>
+			<li><a href="/tags/Dmtracedump/" title="Dmtracedump">Dmtracedump<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Systrace/" title="Systrace">Systrace<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Traceview/" title="Traceview">Traceview<sup>1</sup></a></li>
+		
+			<li><a href="/tags/性能分析/" title="性能分析">性能分析<sup>1</sup></a></li>
 		
 			<li><a href="/tags/打印机/" title="打印机">打印机<sup>1</sup></a></li>
 		
